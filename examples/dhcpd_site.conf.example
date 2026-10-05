@@ -1,0 +1,24 @@
+# Example generated configuration
+# This file is illustrative only.
+
+subnet 10.20.30.0 netmask 255.255.255.0 {
+    authoritative;
+
+    option subnet-mask 255.255.255.0;
+    option routers 10.20.30.1;
+
+    pool {
+        range 10.20.30.100 10.20.30.200;
+
+        on commit {
+            execute("dxtorc",
+                    "commit",
+                    binary-to-ascii(10, 8, ".", leased-address),
+                    binary-to-ascii(16, 8, ":", suffix(hardware, 6)),
+                    pick-first-value(concat("060", binary-to-ascii(16, 8, ".", option vendor-class-identifier)), "")
+                   );
+
+        allow members of "voip-mac-address-prefix";
+        allow members of "Snom320";
+    }
+}
